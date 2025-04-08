@@ -32,6 +32,8 @@ void liftControl() {
  */
 void initialize() {
 
+rotationSensor.reset_position();
+
   pros::Task liftControlTask([]{
     while (true) {
         liftControl();
