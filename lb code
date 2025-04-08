@@ -1,0 +1,41 @@
+pros::Motor LB(-10);
+pros::Rotation rotationSensor(16);
+
+
+const int numStates = 3;
+//make sure these are in centidegrees (1 degree = 100 centidegrees)
+int states[numStates] = {0, 30, 200};
+int currState = 0;
+int target = 0;
+
+void nextState() {
+    currState += 1;
+    if (currState == numStates) {
+        currState = 0;
+    }
+    target = states[currState];
+}
+
+void liftControl() {
+    double kp = 0.7;
+    double error = target - rotationSensor.get_position();
+    double velocity = kp * error;
+    LB.move(velocity);
+}
+
+
+/**
+ * Runs initialization code. This occurs as soon as the program is started.
+ *
+ * All other competition modes are blocked by initialize; it is recommended
+ * to keep execution time for this mode under a few seconds.
+ */
+void initialize() {
+
+  pros::Task liftControlTask([]{
+    while (true) {
+        liftControl();
+        pros::delay(10);
+    }
+  });
+  }
